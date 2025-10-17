@@ -1,0 +1,23 @@
+{
+  "name": "pgtats-automacao-web",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "cypress:open": "cypress open",
+    "cypress:run": "cypress run"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "devDependencies": {
+    "@angular-devkit/build-angular": "^20.3.4",
+    "@angular/cli": "^20.3.4",
+    "@angular/common": "^20.3.3",
+    "@angular/core": "^20.3.3",
+    "@angular/platform-browser-dynamic": "^20.3.3",
+    "cypress": "13.7.3"
+  }
+}
