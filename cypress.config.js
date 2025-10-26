@@ -1,7 +1,7 @@
 const { defineConfig } = require("cypress");
 
 module.exports = defineConfig({
-  // Minimal E2E configuration to avoid Angular component handler error
+  // Configuração E2E (End-to-End Testing)
   e2e: {
     specPattern: "cypress/e2e/**/*.cy.{js,ts,jsx,tsx}",
     supportFile: "cypress/support/e2e.js",
@@ -14,13 +14,6 @@ module.exports = defineConfig({
       attachments: true,
       testCaseSwitchClassnameAndName: false
     }
-  },
-
-  component: {
-    devServer: {
-      framework: "angular",
-      bundler: "webpack",
-    },
-    specPattern: "**/*.cy.ts",
-  },
+  }
 });
+
