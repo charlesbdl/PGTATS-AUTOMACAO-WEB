@@ -1,4 +1,4 @@
-name: Cypress E2E Tests with Mochawesome Report
+name: Cypress E2E Tests with JUnit XML Report
 
 on:
   push:
@@ -24,6 +24,9 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      - name: Create reports directory
+        run: mkdir -p cypress/reports/junit
+
       - name: Run Cypress tests
         uses: cypress-io/github-action@v6
         with:
@@ -32,15 +35,14 @@ jobs:
           spec: cypress/e2e/**/*.cy.js
         continue-on-error: true
 
-      - name: Merge Mochawesome reports
+      - name: Publish Test Results (JUnit XML)
         if: always()
-        run: |
-          npx mochawesome-merge "cypress/reports/*.json" > cypress/reports/report.json
-
-      - name: Generate Mochawesome HTML report
-        if: always()
-        run: |
-          npx marge cypress/reports/report.json -f report -o cypress/reports/html
+        uses: EnricoMi/publish-unit-test-result-action@v2
+        with:
+          files: |
+            cypress/reports/junit/*.xml
+          check_name: Cypress Test Results
+          comment_mode: always
 
       - name: Upload Cypress screenshots
         if: failure()
@@ -58,47 +60,21 @@ jobs:
           path: cypress/videos
           if-no-files-found: ignore
 
-      - name: Upload Mochawesome report
+      - name: Upload JUnit XML reports
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: mochawesome-report
-          path: cypress/reports/html
+          name: junit-test-results
+          path: cypress/reports/junit/*.xml
           if-no-files-found: ignore
 
-      - name: Publish Test Results
+      - name: Upload all test artifacts
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: test-results
+          name: test-artifacts
           path: |
             cypress/reports/**/*
             cypress/videos/**/*
             cypress/screenshots/**/*
-
-      - name: Deploy report to GitHub Pages
-        if: always()
-        uses: peaceiris/actions-gh-pages@v3
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./cypress/reports/html
-          publish_branch: gh-pages
-          destination_dir: reports/${{ github.run_number }}
-
-      - name: Comment PR with report link
-        if: always() && github.event_name == 'pull_request'
-        uses: actions/github-script@v7
-        with:
-          script: |
-            github.rest.issues.createComment({
-              issue_number: context.issue.number,
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              body: `## 📊 Test Report
-              
-              ✅ Tests completed! View the detailed report here:
-              
-              🔗 [Mochawesome Report](https://${context.repo.owner}.github.io/${context.repo.repo}/reports/${{ github.run_number }}/report.html)
-              
-              📹 Videos and screenshots are available in the artifacts.`
-            })
+          if-no-files-found: ignore

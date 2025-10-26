@@ -24,7 +24,9 @@
     "@angular/platform-browser-dynamic": "^20.3.3",
     "cypress": "13.7.3",
     "cypress-mochawesome-reporter": "^4.0.2",
+    "cypress-multi-reporters": "^2.0.5",
     "cypress-xpath": "^2.0.1",
+    "mocha-junit-reporter": "^2.2.1",
     "mochawesome": "^7.1.4",
     "mochawesome-merge": "^5.0.0",
     "mochawesome-report-generator": "^6.3.0"
