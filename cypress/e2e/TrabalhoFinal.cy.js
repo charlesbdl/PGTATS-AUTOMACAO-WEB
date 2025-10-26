@@ -197,16 +197,10 @@ describe('Trabalho final ', () => {
 
   it.only('Test Case 15: Place Order - Register before Checkout', function () {
     cy.fixture('register').then((userData) => {
-      // 1. Launch browser (já feito no beforeEach)
-      // 2. Navigate to url 'http://automationexercise.com' (já feito no beforeEach)
-      
-      // 3. Verify that home page is visible successfully
       CartPage.verifyHomePageVisible();
 
-      // 4. Click 'Signup / Login' button
       RegisterPage.clickSignupLink();
 
-      // 5. Fill all details in Signup and create account
       const uniqueEmail = RegisterPage.generateUniqueEmail('buyer');
       RegisterPage.fillSignupForm(userData.name || 'Test Buyer', uniqueEmail);
       RegisterPage.clickSignupButton();
@@ -214,35 +208,26 @@ describe('Trabalho final ', () => {
       RegisterPage.selectBirthDate(userData.day, userData.month, userData.year);
       RegisterPage.clickCreateAccountButton();
 
-      // 6. Verify 'ACCOUNT CREATED!' and click 'Continue' button
       cy.url({ timeout: 15000 }).should('include', 'account_created');
       cy.wait(2000);
       RegisterPage.clickContinueButton();
 
-      // 7. Verify 'Logged in as username' at top
       CartPage.verifyLoggedInAs(userData.name || 'Test Buyer');
 
-      // 8. Add products to cart
       CartPage.addMultipleProductsToCart(2);
 
-      // 9. Click 'Cart' button
       CartPage.clickCartButton();
 
-      // 10. Verify that cart page is displayed
       CartPage.verifyCartPage();
 
-      // 11. Click Proceed To Checkout
       CartPage.clickProceedToCheckout();
 
-      // 12. Verify Address Details and Review Your Order
       CartPage.verifyAddressDetails();
       CartPage.verifyReviewOrder();
 
-      // 13. Enter description in comment text area and click 'Place Order'
       CartPage.fillComment('Please deliver between 9 AM - 5 PM');
       CartPage.clickPlaceOrder();
 
-      // 14. Enter payment details: Name on Card, Card Number, CVC, Expiration date
       const paymentData = {
         nameOnCard: 'Test User',
         cardNumber: '4111111111111111',
@@ -252,16 +237,12 @@ describe('Trabalho final ', () => {
       };
       CartPage.fillPaymentDetails(paymentData);
 
-      // 15. Click 'Pay and Confirm Order' button
       CartPage.clickPayAndConfirm();
 
-      // 16. Verify success message 'Your order has been placed successfully!'
       CartPage.verifyOrderSuccess();
 
-      // 17. Click 'Delete Account' button
       CartPage.clickDeleteAccount();
 
-      // 18. Verify 'ACCOUNT DELETED!' and click 'Continue' button
       CartPage.verifyAccountDeleted();
       CartPage.clickContinueAfterDelete();
 
