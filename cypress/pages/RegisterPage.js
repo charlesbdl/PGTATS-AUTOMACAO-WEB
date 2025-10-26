@@ -3,7 +3,6 @@ class RegisterPage {
 
   signupLink = '.shop-menu > .nav > :nth-child(4) > a';
 
-  // Campos de Signup
   signupNameInput = '//input[@data-qa="signup-name"]';
   signupEmailInput = '//input[@data-qa="signup-email"]';
   signupButton = '[data-qa="signup-button"]';
@@ -58,18 +57,15 @@ class RegisterPage {
     cy.get(this.mobileNumberInput).scrollIntoView().should('be.visible').type(data.mobileNumber);
   }
 
-
   selectBirthDate(day, month, year) {
     cy.get(this.daysSelect).scrollIntoView().should('be.visible').select(day);
     cy.get(this.monthsSelect).should('be.visible').select(month);
     cy.get(this.yearsSelect).should('be.visible').select(year);
   }
 
-
   clickCreateAccountButton() {
     cy.get(this.createAccountButton).scrollIntoView().should('be.visible').click();
   }
-
 
   verifyAccountCreatedSuccess() {
     cy.url({ timeout: 15000 }).should('include', 'account_created');
@@ -78,17 +74,14 @@ class RegisterPage {
       .and('contain.text', 'Account Created');
   }
 
-
   clickContinueButton() {
     cy.get(this.continueButton).should('be.visible').click();
   }
-
 
   generateUniqueEmail(baseEmail = 'test') {
     const timestamp = Date.now();
     return `${baseEmail}-${timestamp}@example.com`;
   }
-
 
   registerNewUser(userData) {
     this.clickSignupLink();
@@ -110,7 +103,6 @@ class RegisterPage {
   verifyNewUserSignupVisible() {
     cy.xpath(this.newUserSignupHeading).should('be.visible');
   }
-
 
   verifyEmailAlreadyExistError() {
     cy.xpath(this.signupErrorMessage, { timeout: 10000 })

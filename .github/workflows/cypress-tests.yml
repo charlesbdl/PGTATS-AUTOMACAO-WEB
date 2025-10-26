@@ -7,6 +7,13 @@ on:
     branches: [ main, develop ]
   workflow_dispatch:
 
+# Configurar permissões necessárias para o GITHUB_TOKEN
+permissions:
+  contents: read
+  checks: write
+  pull-requests: write
+  actions: read
+
 jobs:
   cypress-run:
     runs-on: ubuntu-latest
@@ -35,6 +42,34 @@ jobs:
           spec: cypress/e2e/**/*.cy.js
         continue-on-error: true
 
+      - name: Generate Test Summary
+        if: always()
+        run: |
+          echo "## 📊 Cypress Test Results" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          
+          if [ -f cypress/reports/junit/*.xml ]; then
+            # Contar testes usando grep no XML
+            TESTS=$(grep -o 'tests="[0-9]*"' cypress/reports/junit/*.xml | head -1 | grep -o '[0-9]*')
+            FAILURES=$(grep -o 'failures="[0-9]*"' cypress/reports/junit/*.xml | head -1 | grep -o '[0-9]*')
+            TIME=$(grep -o 'time="[0-9.]*"' cypress/reports/junit/*.xml | head -1 | grep -o '[0-9.]*')
+            PASSED=$((TESTS - FAILURES))
+            
+            echo "✅ **Passed:** $PASSED" >> $GITHUB_STEP_SUMMARY
+            echo "❌ **Failed:** $FAILURES" >> $GITHUB_STEP_SUMMARY
+            echo "📝 **Total:** $TESTS tests" >> $GITHUB_STEP_SUMMARY
+            echo "⏱️ **Duration:** ${TIME}s" >> $GITHUB_STEP_SUMMARY
+            echo "" >> $GITHUB_STEP_SUMMARY
+            
+            if [ "$FAILURES" -eq 0 ]; then
+              echo "🎉 All tests passed!" >> $GITHUB_STEP_SUMMARY
+            else
+              echo "⚠️ Some tests failed. Check the artifacts for details." >> $GITHUB_STEP_SUMMARY
+            fi
+          else
+            echo "⚠️ No test results found" >> $GITHUB_STEP_SUMMARY
+          fi
+
       - name: Publish Test Results (JUnit XML)
         if: always()
         uses: EnricoMi/publish-unit-test-result-action@v2
@@ -42,7 +77,8 @@ jobs:
           files: |
             cypress/reports/junit/*.xml
           check_name: Cypress Test Results
-          comment_mode: always
+          comment_mode: off
+        continue-on-error: true
 
       - name: Upload Cypress screenshots
         if: failure()
