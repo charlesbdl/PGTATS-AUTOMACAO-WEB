@@ -195,7 +195,7 @@ describe('Trabalho final ', () => {
     cy.log(` Subscribed with: "${subscriptionEmail}"`);
   });
 
-  it.only('Test Case 15: Place Order - Register before Checkout', function () {
+  it('Test Case 15: Place Order - Register before Checkout', function () {
     cy.fixture('register').then((userData) => {
       CartPage.verifyHomePageVisible();
 

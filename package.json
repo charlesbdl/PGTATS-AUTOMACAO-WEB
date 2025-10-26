@@ -4,7 +4,11 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "cypress run",
+    "test:headed": "cypress run --headed",
+    "test:chrome": "cypress run --browser chrome",
+    "test:report": "cypress run && npm run generate:report",
+    "generate:report": "npx mochawesome-merge cypress/reports/*.json > cypress/reports/output.json && npx marge cypress/reports/output.json -o cypress/reports/html --inline",
     "cypress:open": "cypress open",
     "cypress:run": "cypress run"
   },
@@ -19,6 +23,10 @@
     "@angular/core": "^20.3.3",
     "@angular/platform-browser-dynamic": "^20.3.3",
     "cypress": "13.7.3",
-    "cypress-xpath": "^2.0.1"
+    "cypress-mochawesome-reporter": "^4.0.2",
+    "cypress-xpath": "^2.0.1",
+    "mochawesome": "^7.1.4",
+    "mochawesome-merge": "^5.0.0",
+    "mochawesome-report-generator": "^6.3.0"
   }
 }
